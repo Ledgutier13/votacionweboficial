@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Nuevo Usuario</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Registro de Nuevo Usuario</h1>
+        <div id="login">
+            <input type="text" id="adminUsuario" placeholder="Nombre de Usuario Admin">
+            <input type="password" id="adminContrasena" placeholder="Contraseña Admin">
+            <button onclick="loginAdmin()">Ingresar</button>
+        </div>
+        <div id="registro" style="display:none;">
+            <input type="text" id="nombreCompleto" placeholder="Nombre y Apellido">
+            <input type="text" id="nuevoUsuario" placeholder="Nuevo Nombre de Usuario">
+            <input type="password" id="nuevaContrasena" placeholder="Nueva Contraseña">
+            <textarea id="bibliografia" placeholder="Bibliografía"></textarea>
+            <select id="rolUsuario">
+                <option value="Usuario General">Usuario General</option>
+                <option value="Coordinadora general">Coordinadora general</option>
+                <option value="Coordinadora de proyectos">Coordinadora de proyectos</option>
+                <option value="Coordinador de comunicación y difusión">Coordinador de comunicación y difusión</option>
+                <option value="Coordinadora de recursos y finanzas">Coordinadora de recursos y finanzas</option>
+                <option value="Coordinador de Voluntario y participación">Coordinador de Voluntario y participación</option>
+            </select>
+            <button onclick="registrarUsuario()">Registrar Usuario</button>
+            <button onclick="location.href='index.html'">Volver a la Página Principal</button>
+            <h2>Usuarios Registrados</h2>
+            <div style="overflow-x:auto;">
+                <table id="tablaUsuarios">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Los usuarios se cargarán aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Cuadro de diálogo (modal) -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+            <p id="modal-texto"></p>
+        </div>
+    </div>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
