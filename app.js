@@ -721,7 +721,7 @@ window.descargarPDF = async function() {
     const imgData = canvasImage.toDataURL('image/png');
 
     // Añadir la imagen del gráfico al PDF
-    doc.addImage(imgData, 'PNG', 20, 120, 150, 90);
+    doc.addImage(imgData, 'PNG', 20, 120, 160, 90);
 
     // Añadir pie de página
     doc.setFontSize(10);
