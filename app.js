@@ -465,6 +465,7 @@ window.verNotificaciones = async function() {
 
     document.getElementById('modalPropuestas').style.display = 'block'; // Mostrar modal de propuestas
 };
+            propuestaElement.style.backgroundColor =
 
 // Función para aprobar una propuesta
 window.aprobarPropuesta = async function(propuestaId, propuesta, nombreCompleto) {
