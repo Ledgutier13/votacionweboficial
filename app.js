@@ -265,6 +265,28 @@ async function mostrarResultados() {
     const si = votacionSnapshot.val().si;
     const no = votacionSnapshot.val().no;
     const abstencion = votacionSnapshot.val().abstencion;
+    const titulo = votacionSnapshot.val().dequetrata.titulo;
+
+    let mensajeResultado = '';
+    let colorTitulo = '';
+
+    if (si > no && si > abstencion) {
+        mensajeResultado = 'La propuesta ha sido aprobada.';
+        colorTitulo = 'green';
+    } else if (no > si && no > abstencion) {
+        mensajeResultado = 'La propuesta ha sido rechazada.';
+        colorTitulo = 'red';
+    } else if (si === no) {
+        mensajeResultado = 'Hay un empate entre sí y no.';
+        colorTitulo = 'orange';
+    } else {
+        mensajeResultado = 'No hay una decisión clara.';
+        colorTitulo = 'gray';
+    }
+
+    const tituloElement = document.getElementById('tituloVotacion');
+    tituloElement.innerText = `"${titulo}"`;
+    tituloElement.style.color = colorTitulo;
 
     const ctx = document.getElementById('grafica').getContext('2d');
     new Chart(ctx, {
@@ -286,17 +308,6 @@ async function mostrarResultados() {
             }
         }
     });
-
-    let mensajeResultado = '';
-    if (si > no && si > abstencion) {
-        mensajeResultado = 'La propuesta ha sido aprobada.';
-    } else if (no > si && no > abstencion) {
-        mensajeResultado = 'La propuesta ha sido rechazada.';
-    } else if (si === no) {
-        mensajeResultado = 'Hay un empate entre sí y no.';
-    } else {
-        mensajeResultado = 'No hay una decisión clara.';
-    }
 
     document.getElementById('mensajeResultado').innerText = mensajeResultado;
 }
@@ -643,3 +654,80 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 });
+
+// Función para descargar los resultados de la votación en un PDF
+window.descargarPDF = async function() {
+    const { jsPDF } = window.jspdf;
+
+    const dbRef = ref(db);
+    const votacionSnapshot = await get(child(dbRef, 'votacion'));
+
+    const si = votacionSnapshot.val().si;
+    const no = votacionSnapshot.val().no;
+    const abstencion = votacionSnapshot.val().abstencion;
+    const titulo = votacionSnapshot.val().dequetrata.titulo;
+
+    const doc = new jsPDF();
+
+    // Añadir título
+    doc.setFontSize(22);
+    doc.setTextColor(40, 40, 40);
+    doc.text('Resultados de la Votación', 20, 20);
+
+    // Determinar el color del título en función de los resultados
+    let colorTitulo = '';
+    if (si > no && si > abstencion) {
+        colorTitulo = [76, 175, 80]; // Verde
+    } else if (no > si && no > abstencion) {
+        colorTitulo = [244, 67, 54]; // Rojo
+    } else if (si === no) {
+        colorTitulo = [255, 165, 0]; // Naranja
+    } else {
+        colorTitulo = [128, 128, 128]; // Gris
+    }
+
+    // Añadir subtítulo con el color determinado
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Los usuarios votaron sobre ', 20, 30);
+    doc.setTextColor(...colorTitulo);
+    doc.text(`"${titulo}"`, 20, 40);
+    doc.setTextColor(0, 0, 0);
+    doc.text(' obteniendo los siguientes resultados:', 20, 50);
+
+    // Añadir resultados
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Sí: ${si}`, 20, 70);
+    doc.text(`No: ${no}`, 20, 80);
+    doc.text(`Abstención: ${abstencion}`, 20, 90);
+
+    let mensajeResultado = '';
+    if (si > no && si > abstencion) {
+        mensajeResultado = 'La propuesta ha sido aprobada.';
+    } else if (no > si && no > abstencion) {
+        mensajeResultado = 'La propuesta ha sido rechazada.';
+    } else if (si === no) {
+        mensajeResultado = 'Hay un empate entre sí y no.';
+    } else {
+        mensajeResultado = 'No hay una decisión clara.';
+    }
+
+    doc.text(`Resultado: ${mensajeResultado}`, 20, 110);
+
+    // Capturar el gráfico como una imagen
+    const canvas = document.getElementById('grafica');
+    const canvasImage = await html2canvas(canvas);
+    const imgData = canvasImage.toDataURL('image/png');
+
+    // Añadir la imagen del gráfico al PDF
+    doc.addImage(imgData, 'PNG', 20, 120, 150, 90);
+
+    // Añadir pie de página
+    doc.setFontSize(10);
+    doc.setTextColor(150, 150, 150);
+    doc.text('Generado por el Sistema de Votación en Línea', 20, 220);
+
+    doc.save('resultados_votacion.pdf');
+};
+
