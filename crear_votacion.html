@@ -3,52 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administración</title>
+    <title>Resultados de la Votación</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Administración</h1>
-        <div id="login">
-            <input type="text" id="adminUsuario" placeholder="Nombre de Usuario Admin">
-            <input type="password" id="adminContrasena" placeholder="Contraseña Admin">
-            <button onclick="loginAdmin()">Ingresar</button>
+        <h1>Resultados de la Votación</h1>
+        <div id="codigoSection">
+            <button onclick="generarCodigo()">Generar Código</button>
+            <p id="codigoGenerado" style="font-size: 1.2em; color: #4CAF50; margin-top: 20px;"></p>
+            <p>El código solo se puede usar una vez durante esta votación.</p>
+            <input type="text" id="codigoIngresado" placeholder="Ingrese el código">
+            <button onclick="validarCodigo()">Validar e Ingresar</button>
         </div>
-        <div id="crearVotacion" style="display:none;">
-            <div id="mensajeAprobacion" style="background-color: #d4edda; color: #155724; padding: 10px; border: 1px solid #c3e6cb; border-radius: 5px; margin-top: 20px; display: none;"></div>
-            <div id="votacionActual">
-                <h2>Votación Actual</h2>
-                <p id="votacionActualTitulo">Título: No hay datos</p>
-                <p id="votacionActualSubtitulo">Descripción: No hay datos</p>
-                <h3>Estadísticas de Votación</h3>
-                <p id="estadisticasVotacion" style="color: red;">Esta votación ha sido votada por el 0% de los usuarios (0 de 0).</p>
-            </div>
-            <input type="text" id="tituloVotacion" placeholder="Título de la Votación">
-            <textarea id="descripcionVotacion" placeholder="Descripción de la Votación"></textarea>
-            <button onclick="crearVotacion()">Crear Votación</button>
-            <button onclick="borrarVotacion()">Borrar Votación</button>
-            <button onclick="borrarNotificaciones()">Borrar Notificaciones</button>
-            <button onclick="mostrarPropuestasAprobadas()">Ver Propuestas Aprobadas</button>
-            <a href="index.html" class="volver-principal">Volver a la Página Principal</a> <!-- Nuevo botón -->
-        </div>
-    </div>
-    <!-- Modal para mostrar propuestas aprobadas -->
-    <div id="modalPropuestasAprobadas" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="cerrarModalPropuestasAprobadas()">&times;</span>
-            <h2>Propuestas Aprobadas</h2>
-            <table id="tablaPropuestasAprobadas" style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr>
-                        <th style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">Nombre</th>
-                        <th style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">Propuesta</th>
-                    </tr>
-                </thead>
-                <tbody id="listaPropuestasAprobadas">
-                    <!-- Las propuestas aprobadas se cargarán aquí dinámicamente -->
-                </tbody>
-            </table>
+        <div id="resultados" style="display:none;">
+            <h2>
+                Los usuarios votaron sobre <span id="tituloVotacion"></span> obteniendo los siguientes resultados:
+            </h2>
+            <canvas id="grafica"></canvas>
+            <p id="mensajeResultado"></p>
+            <button onclick="descargarPDF()">Descargar Resultados en PDF</button>
+            <button onclick="location.href='index.html'">Volver a la Página Principal</button>
         </div>
     </div>
     <!-- Cuadro de diálogo (modal) -->
